@@ -4,8 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Shuffle, Link, FileText, Copy, Settings, Lock, ListChecks } from 'lucide-react';
 
 // --- Constants ---
-// Default word list for the word chain generator
-const DEFAULT_WORD_LIST = [
+// Default word list for the word chain generator.
+// Object.freeze ensures this array cannot be modified, which can sometimes allow minor engine optimizations.
+const DEFAULT_WORD_LIST = Object.freeze([
   "apple", "banana", "orange", "grape", "strawberry", "blueberry", "raspberry", "pineapple",
   "kiwi", "mango", "peach", "plum", "cherry", "lemon", "lime", "coconut", "avocado",
   "pear", "apricot", "fig", "date", "melon", "watermelon", "cantaloupe", "honeydew",
@@ -44,28 +45,34 @@ const DEFAULT_WORD_LIST = [
   "diamond", "emerald", "ruby", "sapphire", "pearl", "topaz", "amethyst", "garnet",
   "guitar", "piano", "violin", "trumpet", "drummer", "flute", "cello", "saxophone",
   "chocolate", "vanilla", "caramel", "strawberry", "minty", "cookie", "brownie", "fudge"
-];
+]);
 
-const CHAR_SETS = {
+// Character sets for random password generation.
+// Object.freeze ensures these objects cannot be modified.
+const CHAR_SETS = Object.freeze({
   lowercase: 'abcdefghijklmnopqrstuvwxyz',
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   numbers: '0123456789',
   symbols: '!@#$%^&*()_+-=[]{}|;:\'",.<>?/',
-};
+});
 
-const SEPARATORS = {
+// Separator options for word chain generation.
+// Object.freeze ensures these objects cannot be modified.
+const SEPARATORS = Object.freeze({
   hyphen: '-',
   space: ' ',
   underscore: '_',
   none: '',
-};
-const SEPARATOR_OPTIONS = [
+});
+
+// Options for the separator type dropdown.
+const SEPARATOR_OPTIONS = Object.freeze([
   { value: 'hyphen', label: 'Hyphen (-)' },
   { value: 'space', label: 'Space ( )' },
   { value: 'underscore', label: 'Underscore (_)' },
   { value: 'none', label: 'No Separator' },
   { value: 'random', label: 'Random Separator' },
-];
+]);
 
 // --- Utility Functions ---
 
@@ -75,11 +82,16 @@ const SEPARATOR_OPTIONS = [
  * @returns {number} - A cryptographically secure random integer.
  */
 const getRandomCryptoInt = (max) => {
+  // Defensive check: ensure max is a positive number to prevent errors with crypto.getRandomValues
+  if (max <= 0) {
+    console.error("getRandomCryptoInt: 'max' must be a positive number.");
+    return 0; // Return a safe default or handle as an error
+  }
   const randomBytes = new Uint32Array(1);
   window.crypto.getRandomValues(randomBytes);
   // Max value of a Uint32 is 2^32 - 1.
   // We need to ensure the random number is within a range that doesn't cause modulo bias.
-  // This approach ensures uniform distribution.
+  // This approach ensures uniform distribution by re-rolling if the number is too high.
   const randomNumber = randomBytes[0];
   const ceiling = Math.floor(0xFFFFFFFF / max) * max; // Largest multiple of 'max' that fits in Uint32
   let result = randomNumber;
@@ -92,13 +104,15 @@ const getRandomCryptoInt = (max) => {
 
 /**
  * Copies text to the clipboard.
- * Uses document.execCommand('copy') for broader compatibility in sandboxed environments.
+ * Uses document.execCommand('copy') for broader compatibility in sandboxed environments
+ * where navigator.clipboard might be restricted (e.g., iframes).
  * @param {string} text - The text to copy.
  * @returns {boolean} - True if copy was successful, false otherwise.
  */
 const copyToClipboard = (text) => {
   const textarea = document.createElement('textarea');
   textarea.value = text;
+  // Append to document body to make it selectable
   document.body.appendChild(textarea);
   textarea.select();
   try {
@@ -108,25 +122,31 @@ const copyToClipboard = (text) => {
     console.error('Failed to copy text: ', err);
     return false;
   } finally {
+    // Clean up: remove the temporary textarea
     document.body.removeChild(textarea);
   }
 };
 
 /**
  * Shuffles an array using the Fisher-Yates (Knuth) algorithm.
+ * This ensures a truly random permutation of the array elements,
+ * using the cryptographically secure random number generator.
  * @param {Array} array - The array to shuffle.
  * @returns {Array} - The shuffled array.
  */
 const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
+  // Create a shallow copy to avoid modifying the original array directly if it's passed by reference
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
     const j = getRandomCryptoInt(i + 1); // Use CSPRNG for shuffling
-    [array[i], array[j]] = [array[j], array[i]];
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // ES6 destructuring for swap
   }
-  return array;
+  return newArray;
 };
 
 /**
- * Custom Checkbox component for consistent styling.
+ * Custom Checkbox component for consistent styling and reusability.
+ * Uses Tailwind CSS classes for a clean look.
  * @param {object} props - Component props.
  * @param {string} props.id - Unique ID for the checkbox.
  * @param {string} props.label - Label text for the checkbox.
@@ -149,7 +169,8 @@ const Checkbox = ({ id, label, checked, onChange }) => (
 );
 
 /**
- * Custom Range Slider component for consistent styling and accessibility.
+ * Custom Range Slider component for consistent styling, accessibility, and reusability.
+ * Provides a clear label and current value display.
  * @param {object} props - Component props.
  * @param {string} props.label - Label text for the slider.
  * @param {number} props.min - Minimum value of the slider.
@@ -183,6 +204,7 @@ const RangeSlider = ({ label, min, max, value, onChange }) => (
 /**
  * Component for the Random Password Generation mode.
  * Manages settings and logic for generating random character-based passwords.
+ * Settings are persisted in localStorage.
  * @param {object} props - Component props.
  * @param {function} props.onGenerate - Callback to pass the generated password to the parent.
  */
@@ -221,6 +243,7 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
   /**
    * Generates a random password based on current settings.
    * Uses cryptographically secure random numbers and guarantees inclusion of selected types.
+   * useCallback is used to memoize this function, preventing unnecessary re-creations.
    */
   const generatePassword = useCallback(() => {
     const activeCharSets = [];
@@ -231,29 +254,30 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
 
     // Provide feedback if no character type is selected
     if (activeCharSets.length === 0) {
-      onGenerate('Please select at least one character type.');
+      onGenerate('Error: Please select at least one character type.');
       return;
     }
 
     let passwordChars = [];
     let allCharacters = activeCharSets.join('');
 
-    // Ensure at least one character from each selected type
+    // Ensure at least one character from each selected type is included
     activeCharSets.forEach(charSet => {
       const randomIndex = getRandomCryptoInt(charSet.length);
       passwordChars.push(charSet[randomIndex]);
     });
 
-    // Generate the remaining characters
+    // Generate the remaining characters to meet the desired length
     for (let i = passwordChars.length; i < passwordLength; i++) {
       const randomIndex = getRandomCryptoInt(allCharacters.length);
       passwordChars.push(allCharacters[randomIndex]);
     }
 
-    // Shuffle the array to randomize the position of the guaranteed characters
-    shuffleArray(passwordChars);
+    // Shuffle the array to randomize the position of the guaranteed characters,
+    // enhancing randomness and preventing predictable patterns.
+    const finalPasswordChars = shuffleArray(passwordChars);
 
-    onGenerate(passwordChars.join(''));
+    onGenerate(finalPasswordChars.join(''));
   }, [passwordLength, includeSymbols, includeNumbers, includeUppercase, includeLowercase, onGenerate]);
 
   return (
@@ -310,6 +334,7 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
 /**
  * Component for the Word Chain Generation mode.
  * Manages settings and logic for generating word-based passwords.
+ * Settings are persisted in localStorage.
  * @param {object} props - Component props.
  * @param {function} props.onGenerate - Callback to pass the generated password to the parent.
  */
@@ -348,10 +373,10 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
   });
 
 
-  // Save settings to local storage
+  // Save settings to local storage whenever they change
   useEffect(() => {
     localStorage.setItem('wordChainWordCount', wordCount);
-    localStorage.setItem('useDefaultWordList', useDefaultList);
+    localStorage.setItem('useDefaultList', useDefaultList);
     localStorage.setItem('customWordListInput', customWordListInput);
     localStorage.setItem('wordChainSeparatorType', separatorType);
     localStorage.setItem('wordChainRandomCapitalization', randomCapitalization);
@@ -361,6 +386,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
 
   /**
    * Processes the custom word list input, handling URLs and plain text.
+   * Uses useCallback to memoize this async function.
    */
   const processCustomWordList = useCallback(async () => {
     setLoadingWords(true);
@@ -375,28 +401,36 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
         }
         const text = await response.text();
         words = text.split(/\s+/).filter(word => word.length > 0);
+        if (words.length === 0) {
+          setWordListError("The provided URL did not contain any valid words.");
+        }
       } catch (error) {
         console.error("Error fetching word list from URL:", error);
         setWordListError("Failed to load words from URL. Please check the URL and CORS policy.");
       }
     } else {
       words = customWordListInput.split(/\s+/).filter(word => word.length > 0);
+      if (words.length === 0 && customWordListInput.trim().length > 0) {
+        setWordListError("No valid words found in the custom input.");
+      }
     }
     setCustomWords(words);
     setLoadingWords(false);
   }, [customWordListInput]);
 
-  // Effect to re-process custom word list when input changes
+  // Effect to re-process custom word list when input changes.
+  // This useEffect depends on the memoized processCustomWordList function.
   useEffect(() => {
     if (customWordListInput) {
       processCustomWordList();
     } else {
       setCustomWords([]); // Clear custom words if input is empty
+      setWordListError(null); // Clear error if input is cleared
     }
   }, [customWordListInput, processCustomWordList]);
 
   /**
-   * Applies random capitalization to a word.
+   * Applies random capitalization to a word based on the 'randomCapitalization' setting.
    * @param {string} word - The word to capitalize.
    * @returns {string} - The capitalized word.
    */
@@ -407,7 +441,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
     if (rand === 0) return word.toLowerCase();
     if (rand === 1) return word.toUpperCase();
     if (rand === 2) return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    // Random character case
+    // Random character case: iterate through each character and randomly capitalize it
     return word.split('').map(char => {
       return getRandomCryptoInt(2) === 0 ? char.toLowerCase() : char.toUpperCase();
     }).join('');
@@ -415,6 +449,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
 
   /**
    * Generates a word chain password based on current settings.
+   * Uses useCallback to memoize this function.
    */
   const generateWordChain = useCallback(() => {
     let combinedWords = [];
@@ -423,41 +458,43 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
     }
 
     if (customWords.length > 0) {
-      // Use Set to ensure unique words when combining lists
+      // Use Set to ensure unique words when combining lists, avoiding duplicates
       combinedWords = Array.from(new Set([...combinedWords, ...customWords]));
     }
 
     if (combinedWords.length === 0) {
-      onGenerate('No words available. Please enable default list or provide a valid custom list.');
+      onGenerate('Error: No words available. Please enable default list or provide a valid custom list.');
       return;
     }
 
     let generatedParts = [];
-    const availableSeparators = Object.values(SEPARATORS).filter(s => s !== 'random'); // Exclude 'random' from direct use
+    // Filter out 'random' from available separators as it's a selection option, not a separator character.
+    const availableSeparators = Object.values(SEPARATORS).filter(s => s !== 'random');
 
     for (let i = 0; i < wordCount; i++) {
-      // Pick a random word
+      // Pick a random word from the combined list
       const wordIndex = getRandomCryptoInt(combinedWords.length);
       let word = combinedWords[wordIndex];
 
-      // Apply capitalization
+      // Apply capitalization based on settings
       word = applyRandomCapitalization(word);
       generatedParts.push(word);
 
-      // Add separator and optional numbers/symbols if not the last word
+      // Add separator and optional numbers/symbols if it's not the last word
       if (i < wordCount - 1) {
         let currentSeparator = SEPARATORS[separatorType];
         if (separatorType === 'random') {
+          // If 'random' separator is chosen, pick one randomly from the available separators
           currentSeparator = availableSeparators[getRandomCryptoInt(availableSeparators.length)];
         }
         generatedParts.push(currentSeparator);
 
         if (includeNumbersBetweenWords) {
-          generatedParts.push(getRandomCryptoInt(10)); // Single digit number
+          generatedParts.push(getRandomCryptoInt(10)); // Append a single digit number (0-9)
         }
         if (includeSymbolsBetweenWords) {
           const randomIndex = getRandomCryptoInt(CHAR_SETS.symbols.length);
-          generatedParts.push(CHAR_SETS.symbols[randomIndex]);
+          generatedParts.push(CHAR_SETS.symbols[randomIndex]); // Append a random symbol
         }
       }
     }
@@ -466,6 +503,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
 
   /**
    * Handles file upload for custom word lists.
+   * Reads the file content as text and sets it as the custom word list input.
    * @param {Event} event - The file input change event.
    */
   const handleFileUpload = (event) => {
@@ -600,6 +638,10 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
  * Handles mode switching and displays the generated password.
  */
 const App = () => {
+  // For GitHub Pages deployment, ensure your package.json has a "homepage" field:
+  // "homepage": "https://yourusername.github.io/your-repo-name/",
+  // This helps React's build process correctly resolve asset paths.
+
   const [currentMode, setCurrentMode] = useState(() => {
     const savedMode = localStorage.getItem('passwordGeneratorMode');
     return savedMode || 'random'; // Default to 'random'
@@ -623,8 +665,14 @@ const App = () => {
 
   /**
    * Handles copying the generated password to the clipboard.
+   * Prevents copying error messages.
    */
   const handleCopy = () => {
+    if (generatedPassword.startsWith('Error:')) { // Prevent copying error messages
+      setCopyStatus('Cannot copy error message.');
+      setTimeout(() => setCopyStatus(''), 2000);
+      return;
+    }
     if (copyToClipboard(generatedPassword)) {
       setCopyStatus('Copied!');
       setTimeout(() => setCopyStatus(''), 2000); // Clear after 2 seconds
@@ -676,13 +724,13 @@ const App = () => {
                 type="text"
                 readOnly
                 value={generatedPassword}
-                className="flex-grow p-3 border border-gray-300 rounded-md bg-white text-gray-800 font-mono text-lg break-all focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className={`flex-grow p-3 border rounded-md bg-white font-mono text-lg break-all focus:outline-none focus:ring-2 ${generatedPassword.startsWith('Error:') ? 'border-red-500 text-red-700' : 'border-gray-300 text-gray-800 focus:ring-indigo-500'}`}
                 placeholder="Your password will appear here..."
               />
               <button
                 onClick={handleCopy}
                 className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-md flex items-center justify-center sm:w-auto w-full"
-                disabled={!generatedPassword}
+                disabled={!generatedPassword || generatedPassword.startsWith('Error:')}
               >
                 <Copy className="mr-2" size={20} /> {copyStatus || 'Copy'}
               </button>
