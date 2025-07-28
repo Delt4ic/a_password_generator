@@ -575,7 +575,6 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
         <Checkbox
           id="includeSymbolsBetweenWords"
           label="Include Symbols Between Words"
-          checked={includeSymbolsBetweenWords}
           onChange={() => setIncludeSymbolsBetweenWords(!includeSymbolsBetweenWords)}
         />
       </div>
