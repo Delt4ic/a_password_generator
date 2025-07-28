@@ -160,9 +160,10 @@ const Checkbox = ({ id, label, checked, onChange }) => (
       id={id}
       checked={checked}
       onChange={onChange}
-      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-md cursor-pointer"
+      // Removed rounded-md, adjusted colors
+      className="h-4 w-4 bg-gray-600 border-gray-400 focus:ring-green-400 checked:bg-green-400 checked:border-green-400 cursor-pointer"
     />
-    <label htmlFor={id} className="ml-2 text-gray-700 text-sm font-medium cursor-pointer">
+    <label htmlFor={id} className="ml-2 text-gray-200 text-sm font-mono cursor-pointer">
       {label}
     </label>
   </div>
@@ -180,8 +181,8 @@ const Checkbox = ({ id, label, checked, onChange }) => (
  */
 const RangeSlider = ({ label, min, max, value, onChange }) => (
   <div className="mb-4">
-    <label htmlFor={label} className="block text-gray-700 text-sm font-medium mb-2">
-      {label}: <span className="font-semibold text-indigo-600">{value}</span>
+    <label htmlFor={label} className="block text-gray-200 text-sm font-mono mb-2">
+      {label}: <span className="font-semibold text-green-400">{value}</span>
     </label>
     <input
       type="range"
@@ -190,7 +191,8 @@ const RangeSlider = ({ label, min, max, value, onChange }) => (
       max={max}
       value={value}
       onChange={onChange}
-      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm accent-indigo-500"
+      // Adjusted colors for retro feel
+      className="w-full h-2 bg-gray-600 rounded-none appearance-none cursor-pointer range-sm accent-green-400"
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={value}
@@ -281,9 +283,9 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
   }, [passwordLength, includeSymbols, includeNumbers, includeUppercase, includeLowercase, onGenerate]);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <Shuffle className="mr-2 text-indigo-600" size={24} /> Random Generation
+    <div className="p-6 bg-gray-800 border-2 border-green-500 shadow-hard-green">
+      <h2 className="text-2xl font-bold text-green-400 mb-6 flex items-center">
+        <Shuffle className="mr-2 text-green-400" size={24} /> Random Generation
       </h2>
 
       <RangeSlider
@@ -323,7 +325,8 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
 
       <button
         onClick={generatePassword}
-        className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
+        // Retro button style
+        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm"
       >
         Generate Random Password
       </button>
@@ -521,9 +524,9 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <ListChecks className="mr-2 text-indigo-600" size={24} /> Word Chain Generation
+    <div className="p-6 bg-gray-800 border-2 border-green-500 shadow-hard-green">
+      <h2 className="text-2xl font-bold text-green-400 mb-6 flex items-center">
+        <ListChecks className="mr-2 text-green-400" size={24} /> Word Chain Generation
       </h2>
 
       <RangeSlider
@@ -544,14 +547,15 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="separatorType" className="block text-gray-700 text-sm font-medium mb-2">
+        <label htmlFor="separatorType" className="block text-gray-200 text-sm font-mono mb-2">
           Separator Type:
         </label>
         <select
           id="separatorType"
           value={separatorType}
           onChange={(e) => setSeparatorType(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-800"
+          // Removed rounded-md, adjusted colors
+          className="w-full p-2 bg-gray-900 border-2 border-green-500 text-green-400 focus:ring-green-400 focus:border-green-400 font-mono"
         >
           {SEPARATOR_OPTIONS.map(option => (
             <option key={option.value} value={option.value}>{option.label}</option>
@@ -575,33 +579,39 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
         <Checkbox
           id="includeSymbolsBetweenWords"
           label="Include Symbols Between Words"
+          checked={includeSymbolsBetweenWords}
           onChange={() => setIncludeSymbolsBetweenWords(!includeSymbolsBetweenWords)}
         />
       </div>
 
 
-      <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50 mt-4">
-        <p className="text-gray-700 text-sm font-medium mb-2">
+      <div className="mb-4 p-4 bg-gray-900 border-2 border-green-500 mt-4">
+        <p className="text-green-400 text-sm font-mono mb-2">
           Add Custom Words (one word per line, or space-separated, or URL):
         </p>
         <label htmlFor="customWordList" className="sr-only">Custom Word List Input</label>
         <textarea
           id="customWordList"
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-800"
+          // Removed rounded-md, adjusted colors
+          className="w-full p-2 bg-gray-900 border-2 border-green-500 text-green-400 font-mono focus:ring-green-400 focus:border-green-400"
           rows="5"
           placeholder="Enter words here, or paste a URL (e.g., https://example.com/words.txt)"
           value={customWordListInput}
           onChange={(e) => setCustomWordListInput(e.target.value)}
         ></textarea>
-        <div className="mt-2 flex items-center space-x-4">
-          <label className="cursor-pointer bg-indigo-500 hover:bg-indigo-600 text-white text-sm py-2 px-4 rounded-md transition duration-200">
+        <div className="mt-4 flex items-center space-x-4">
+          <label
+            // Retro button style
+            className="cursor-pointer bg-green-600 hover:bg-green-500 text-gray-900 text-sm py-2 px-4 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm"
+          >
             <FileText className="inline-block mr-2" size={18} />
             Upload from File
             <input type="file" className="hidden" onChange={handleFileUpload} accept=".txt" />
           </label>
           <button
             onClick={processCustomWordList}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm py-2 px-4 rounded-md transition duration-200"
+            // Retro button style
+            className="bg-gray-600 hover:bg-gray-500 text-gray-200 text-sm py-2 px-4 border-2 border-gray-500 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-gray-sm"
             disabled={loadingWords}
           >
             <Link className="inline-block mr-2" size={18} />
@@ -609,22 +619,23 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
           </button>
         </div>
         {wordListError && (
-          <p className="text-red-500 text-sm mt-2">{wordListError}</p>
+          <p className="text-red-500 text-sm mt-2 font-mono">{wordListError}</p>
         )}
         {customWords.length > 0 && !loadingWords && !wordListError && (
-          <p className="text-green-600 text-sm mt-2">Loaded {customWords.length} custom words.</p>
+          <p className="text-green-400 text-sm mt-2 font-mono">Loaded {customWords.length} custom words.</p>
         )}
         {useDefaultList && customWords.length > 0 && (
-          <p className="text-blue-600 text-sm mt-2">Default words and custom words will be combined.</p>
+          <p className="text-blue-400 text-sm mt-2 font-mono">Default words and custom words will be combined.</p>
         )}
         {!useDefaultList && customWords.length === 0 && (
-          <p className="text-orange-600 text-sm mt-2">No words selected. Please enable default list or provide custom words.</p>
+          <p className="text-orange-400 text-sm mt-2 font-mono">No words selected. Please enable default list or provide custom words.</p>
         )}
       </div>
 
       <button
         onClick={generateWordChain}
-        className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
+        // Retro button style
+        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm"
       >
         Generate Word Chain Password
       </button>
@@ -681,62 +692,91 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 flex items-center justify-center p-4 font-sans text-gray-900">
-      <div className="bg-white rounded-xl shadow-2xl overflow-hidden w-full max-w-3xl border border-gray-200">
-        <header className="bg-indigo-700 text-white p-6 flex items-center justify-between">
-          <h1 className="text-3xl font-extrabold flex items-center">
-            <Lock className="mr-3" size={32} /> Password Generator
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center py-8 px-4 font-mono text-gray-200">
+      <style>
+        {`
+        /* Custom hard shadow for oldschool buttons */
+        .shadow-hard-green {
+          box-shadow: 4px 4px 0px #16a34a; /* green-600 */
+        }
+        .shadow-hard-green-sm {
+          box-shadow: 2px 2px 0px #16a34a; /* green-600 */
+        }
+        .shadow-hard-gray-sm {
+          box-shadow: 2px 2px 0px #4b5563; /* gray-600 */
+        }
+        /* Ensure inputs and selects have sharp corners */
+        input[type="text"], textarea, select {
+          border-radius: 0 !important;
+        }
+        /* Style for disabled buttons */
+        button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          box-shadow: none; /* Remove shadow when disabled */
+          transform: none; /* Remove transform when disabled */
+        }
+        `}
+      </style>
+      <div className="bg-gray-800 border-2 border-green-500 overflow-hidden w-full max-w-4xl shadow-hard-green">
+        <header className="bg-gray-900 border-b-2 border-green-500 text-green-400 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <h1 className="text-3xl sm:text-4xl font-bold flex items-center text-center sm:text-left">
+            <Lock className="mr-3" size={32} /> PASSWORD GENERATOR
           </h1>
-          <div className="flex space-x-3">
+          <div className="flex flex-wrap justify-center sm:justify-end gap-3">
             <button
               onClick={() => setCurrentMode('random')}
-              className={`py-2 px-5 rounded-full text-sm font-semibold transition duration-300 ease-in-out ${
-                currentMode === 'random' ? 'bg-indigo-500 shadow-md' : 'bg-indigo-600 hover:bg-indigo-500'
+              // Retro button style
+              className={`py-2 px-5 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 shadow-hard-green-sm ${
+                currentMode === 'random' ? 'bg-green-600 text-gray-900' : 'bg-gray-700 hover:bg-gray-600 text-green-400'
               } flex items-center`}
             >
-              <Shuffle className="mr-2" size={18} /> Random
+              <Shuffle className="mr-2" size={18} /> RANDOM
             </button>
             <button
               onClick={() => setCurrentMode('word-chain')}
-              className={`py-2 px-5 rounded-full text-sm font-semibold transition duration-300 ease-in-out ${
-                currentMode === 'word-chain' ? 'bg-indigo-500 shadow-md' : 'bg-indigo-600 hover:bg-indigo-500'
+              // Retro button style
+              className={`py-2 px-5 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 shadow-hard-green-sm ${
+                currentMode === 'word-chain' ? 'bg-green-600 text-gray-900' : 'bg-gray-700 hover:bg-gray-600 text-green-400'
               } flex items-center`}
             >
-              <ListChecks className="mr-2" size={18} /> Word Chain
+              <ListChecks className="mr-2" size={18} /> WORD CHAIN
             </button>
           </div>
         </header>
 
-        <main className="p-8">
+        <main className="p-6 sm:p-8 space-y-8">
           {currentMode === 'random' ? (
             <RandomPasswordGenerator onGenerate={handleGeneratePassword} />
           ) : (
             <WordChainPasswordGenerator onGenerate={handleGeneratePassword} />
           )}
 
-          <div className="mt-8 p-6 bg-gray-100 rounded-lg border border-gray-200 shadow-inner">
-            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-              <Settings className="mr-2 text-indigo-600" size={20} /> Generated Password
+          <div className="p-6 bg-gray-900 border-2 border-green-500 shadow-hard-green">
+            <h3 className="text-xl font-bold text-green-400 mb-4 flex items-center">
+              <Settings className="mr-2 text-green-400" size={20} /> GENERATED PASSWORD
             </h3>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
               <input
                 type="text"
                 readOnly
                 value={generatedPassword}
-                className={`flex-grow p-3 border rounded-md bg-white font-mono text-lg break-all focus:outline-none focus:ring-2 ${generatedPassword.startsWith('Error:') ? 'border-red-500 text-red-700' : 'border-gray-300 text-gray-800 focus:ring-indigo-500'}`}
-                placeholder="Your password will appear here..."
+                // Removed rounded-md, adjusted colors
+                className={`flex-grow p-3 bg-gray-900 border-2 font-mono text-lg break-all focus:outline-none focus:ring-2 ${generatedPassword.startsWith('Error:') ? 'border-red-500 text-red-400' : 'border-green-500 text-green-400 focus:ring-green-400'}`}
+                placeholder="YOUR PASSWORD WILL APPEAR HERE..."
               />
               <button
                 onClick={handleCopy}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-md flex items-center justify-center sm:w-auto w-full"
+                // Retro button style
+                className="bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm flex items-center justify-center sm:w-auto w-full"
                 disabled={!generatedPassword || generatedPassword.startsWith('Error:')}
               >
-                <Copy className="mr-2" size={20} /> {copyStatus || 'Copy'}
+                <Copy className="mr-2" size={20} /> {copyStatus.toUpperCase() || 'COPY'}
               </button>
             </div>
             {copyStatus && (
-              <p className={`mt-2 text-sm ${copyStatus === 'Copied!' ? 'text-green-600' : 'text-red-500'} font-medium text-center sm:text-left`}>
-                {copyStatus}
+              <p className={`mt-2 text-sm ${copyStatus === 'Copied!' ? 'text-green-400' : 'text-red-400'} font-mono font-medium text-center sm:text-left`}>
+                {copyStatus.toUpperCase()}
               </p>
             )}
           </div>
