@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-// Lucide React icons for a cleaner UI
-import { Shuffle, Link, FileText, Copy, Settings, Lock, ListChecks } from 'lucide-react';
+// Lucide React icons for functional clarity, keeping only essential ones
+import { Shuffle, Link, Copy, ListChecks } from 'lucide-react';
 
 // --- Constants ---
 // Default word list for the word chain generator.
@@ -283,9 +283,9 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
   }, [passwordLength, includeSymbols, includeNumbers, includeUppercase, includeLowercase, onGenerate]);
 
   return (
-    <div className="p-6 bg-gray-800 border-2 border-green-500 shadow-hard-green">
-      <h2 className="text-2xl font-bold text-green-400 mb-6 flex items-center">
-        <Shuffle className="mr-2 text-green-400" size={24} /> Random Generation
+    <div className="p-6 bg-gray-800 border-2 border-green-500">
+      <h2 className="text-2xl font-bold text-green-400 mb-6 font-mono">
+        RANDOM GENERATION
       </h2>
 
       <RangeSlider
@@ -325,10 +325,9 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
 
       <button
         onClick={generatePassword}
-        // Retro button style
-        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm"
+        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out"
       >
-        Generate Random Password
+        GENERATE RANDOM PASSWORD
       </button>
     </div>
   );
@@ -524,9 +523,9 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
   };
 
   return (
-    <div className="p-6 bg-gray-800 border-2 border-green-500 shadow-hard-green">
-      <h2 className="text-2xl font-bold text-green-400 mb-6 flex items-center">
-        <ListChecks className="mr-2 text-green-400" size={24} /> Word Chain Generation
+    <div className="p-6 bg-gray-800 border-2 border-green-500">
+      <h2 className="text-2xl font-bold text-green-400 mb-6 font-mono">
+        WORD CHAIN GENERATION
       </h2>
 
       <RangeSlider
@@ -587,7 +586,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
 
       <div className="mb-4 p-4 bg-gray-900 border-2 border-green-500 mt-4">
         <p className="text-green-400 text-sm font-mono mb-2">
-          Add Custom Words (one word per line, or space-separated, or URL):
+          ADD CUSTOM WORDS (ONE WORD PER LINE, OR SPACE-SEPARATED, OR URL):
         </p>
         <label htmlFor="customWordList" className="sr-only">Custom Word List Input</label>
         <textarea
@@ -595,49 +594,40 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
           // Removed rounded-md, adjusted colors
           className="w-full p-2 bg-gray-900 border-2 border-green-500 text-green-400 font-mono focus:ring-green-400 focus:border-green-400"
           rows="5"
-          placeholder="Enter words here, or paste a URL (e.g., https://example.com/words.txt)"
+          placeholder="ENTER WORDS HERE, OR PASTE A URL (E.G., HTTPS://EXAMPLE.COM/WORDS.TXT)"
           value={customWordListInput}
           onChange={(e) => setCustomWordListInput(e.target.value)}
         ></textarea>
-        <div className="mt-4 flex items-center space-x-4">
-          <label
-            // Retro button style
-            className="cursor-pointer bg-green-600 hover:bg-green-500 text-gray-900 text-sm py-2 px-4 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm"
-          >
-            <FileText className="inline-block mr-2" size={18} />
-            Upload from File
-            <input type="file" className="hidden" onChange={handleFileUpload} accept=".txt" />
-          </label>
+        <div className="mt-4 text-sm text-gray-400 font-mono">
           <button
             onClick={processCustomWordList}
-            // Retro button style
-            className="bg-gray-600 hover:bg-gray-500 text-gray-200 text-sm py-2 px-4 border-2 border-gray-500 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-gray-sm"
+            // Retro button style, removed hover:scale-105
+            className="bg-gray-600 hover:bg-gray-500 text-gray-200 py-2 px-4 border-2 border-gray-500 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out"
             disabled={loadingWords}
           >
             <Link className="inline-block mr-2" size={18} />
-            {loadingWords ? 'Loading...' : 'Process Input'}
+            {loadingWords ? 'LOADING...' : 'PROCESS INPUT'}
           </button>
         </div>
         {wordListError && (
           <p className="text-red-500 text-sm mt-2 font-mono">{wordListError}</p>
         )}
         {customWords.length > 0 && !loadingWords && !wordListError && (
-          <p className="text-green-400 text-sm mt-2 font-mono">Loaded {customWords.length} custom words.</p>
+          <p className="text-green-400 text-sm mt-2 font-mono">LOADED {customWords.length} CUSTOM WORDS.</p>
         )}
         {useDefaultList && customWords.length > 0 && (
-          <p className="text-blue-400 text-sm mt-2 font-mono">Default words and custom words will be combined.</p>
+          <p className="text-blue-400 text-sm mt-2 font-mono">DEFAULT WORDS AND CUSTOM WORDS WILL BE COMBINED.</p>
         )}
         {!useDefaultList && customWords.length === 0 && (
-          <p className="text-orange-400 text-sm mt-2 font-mono">No words selected. Please enable default list or provide custom words.</p>
+          <p className="text-orange-400 text-sm mt-2 font-mono">NO WORDS SELECTED. PLEASE ENABLE DEFAULT LIST OR PROVIDE CUSTOM WORDS.</p>
         )}
       </div>
 
       <button
         onClick={generateWordChain}
-        // Retro button style
-        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm"
+        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out"
       >
-        Generate Word Chain Password
+        GENERATE WORD CHAIN PASSWORD
       </button>
     </div>
   );
@@ -692,19 +682,10 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center py-8 px-4 font-mono text-gray-200">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center py-4 px-2 font-mono text-gray-200">
       <style>
         {`
-        /* Custom hard shadow for oldschool buttons */
-        .shadow-hard-green {
-          box-shadow: 4px 4px 0px #16a34a; /* green-600 */
-        }
-        .shadow-hard-green-sm {
-          box-shadow: 2px 2px 0px #16a34a; /* green-600 */
-        }
-        .shadow-hard-gray-sm {
-          box-shadow: 2px 2px 0px #4b5563; /* gray-600 */
-        }
+        /* Removed custom hard shadows */
         /* Ensure inputs and selects have sharp corners */
         input[type="text"], textarea, select {
           border-radius: 0 !important;
@@ -718,60 +699,56 @@ const App = () => {
         }
         `}
       </style>
-      <div className="bg-gray-800 border-2 border-green-500 overflow-hidden w-full max-w-4xl shadow-hard-green">
-        <header className="bg-gray-900 border-b-2 border-green-500 text-green-400 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <h1 className="text-3xl sm:text-4xl font-bold flex items-center text-center sm:text-left">
-            <Lock className="mr-3" size={32} /> PASSWORD GENERATOR
+      <div className="bg-gray-800 border-2 border-green-500 overflow-hidden w-full max-w-3xl"> {/* Removed shadow-hard-green */}
+        <header className="bg-gray-900 border-b-2 border-green-500 text-green-400 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-center sm:text-left">
+            PASSWORD GENERATOR
           </h1>
-          <div className="flex flex-wrap justify-center sm:justify-end gap-3">
+          <div className="flex flex-wrap justify-center sm:justify-end gap-2">
             <button
               onClick={() => setCurrentMode('random')}
-              // Retro button style
-              className={`py-2 px-5 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 shadow-hard-green-sm ${
+              className={`py-2 px-4 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 ${
                 currentMode === 'random' ? 'bg-green-600 text-gray-900' : 'bg-gray-700 hover:bg-gray-600 text-green-400'
               } flex items-center`}
             >
-              <Shuffle className="mr-2" size={18} /> RANDOM
+              <Shuffle className="mr-2" size={16} /> RANDOM
             </button>
             <button
               onClick={() => setCurrentMode('word-chain')}
-              // Retro button style
-              className={`py-2 px-5 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 shadow-hard-green-sm ${
+              className={`py-2 px-4 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 ${
                 currentMode === 'word-chain' ? 'bg-green-600 text-gray-900' : 'bg-gray-700 hover:bg-gray-600 text-green-400'
               } flex items-center`}
             >
-              <ListChecks className="mr-2" size={18} /> WORD CHAIN
+              <ListChecks className="mr-2" size={16} /> WORD CHAIN
             </button>
           </div>
         </header>
 
-        <main className="p-6 sm:p-8 space-y-8">
+        <main className="p-4 space-y-4">
           {currentMode === 'random' ? (
             <RandomPasswordGenerator onGenerate={handleGeneratePassword} />
           ) : (
             <WordChainPasswordGenerator onGenerate={handleGeneratePassword} />
           )}
 
-          <div className="p-6 bg-gray-900 border-2 border-green-500 shadow-hard-green">
-            <h3 className="text-xl font-bold text-green-400 mb-4 flex items-center">
-              <Settings className="mr-2 text-green-400" size={20} /> GENERATED PASSWORD
+          <div className="p-4 bg-gray-900 border-2 border-green-500">
+            <h3 className="text-lg font-bold text-green-400 mb-3 font-mono">
+              GENERATED PASSWORD
             </h3>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
               <input
                 type="text"
                 readOnly
                 value={generatedPassword}
-                // Removed rounded-md, adjusted colors
-                className={`flex-grow p-3 bg-gray-900 border-2 font-mono text-lg break-all focus:outline-none focus:ring-2 ${generatedPassword.startsWith('Error:') ? 'border-red-500 text-red-400' : 'border-green-500 text-green-400 focus:ring-green-400'}`}
+                className={`flex-grow p-2 bg-gray-900 border-2 font-mono text-base break-all focus:outline-none focus:ring-2 ${generatedPassword.startsWith('Error:') ? 'border-red-500 text-red-400' : 'border-green-500 text-green-400 focus:ring-green-400'}`}
                 placeholder="YOUR PASSWORD WILL APPEAR HERE..."
               />
               <button
                 onClick={handleCopy}
-                // Retro button style
-                className="bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out shadow-hard-green-sm flex items-center justify-center sm:w-auto w-full"
+                className="bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-2 px-4 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out flex items-center justify-center sm:w-auto w-full"
                 disabled={!generatedPassword || generatedPassword.startsWith('Error:')}
               >
-                <Copy className="mr-2" size={20} /> {copyStatus.toUpperCase() || 'COPY'}
+                <Copy className="mr-2" size={16} /> {copyStatus.toUpperCase() || 'COPY'}
               </button>
             </div>
             {copyStatus && (
