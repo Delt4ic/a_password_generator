@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-// Lucide React icons for functional clarity, keeping only essential ones
-import { Shuffle, Link, Copy, ListChecks } from 'lucide-react';
+// Lucide React icons are removed as they don't fit the barebone aesthetic.
+// We'll use plain text or simple characters instead.
 
 // --- Constants ---
 // Default word list for the word chain generator.
@@ -146,7 +146,7 @@ const shuffleArray = (array) => {
 
 /**
  * Custom Checkbox component for consistent styling and reusability.
- * Uses Tailwind CSS classes for a clean look.
+ * Reverts to browser default styling.
  * @param {object} props - Component props.
  * @param {string} props.id - Unique ID for the checkbox.
  * @param {string} props.label - Label text for the checkbox.
@@ -154,16 +154,15 @@ const shuffleArray = (array) => {
  * @param {function} props.onChange - Callback for when the checked state changes.
  */
 const Checkbox = ({ id, label, checked, onChange }) => (
-  <div className="flex items-center mb-2">
+  <div style={{ marginBottom: '5px' }}>
     <input
       type="checkbox"
       id={id}
       checked={checked}
       onChange={onChange}
-      // Removed rounded-md, adjusted colors
-      className="h-4 w-4 bg-gray-600 border-gray-400 focus:ring-green-400 checked:bg-green-400 checked:border-green-400 cursor-pointer"
+      style={{ marginRight: '5px' }}
     />
-    <label htmlFor={id} className="ml-2 text-gray-200 text-sm font-mono cursor-pointer">
+    <label htmlFor={id} style={{ fontSize: '14px' }}>
       {label}
     </label>
   </div>
@@ -171,7 +170,7 @@ const Checkbox = ({ id, label, checked, onChange }) => (
 
 /**
  * Custom Range Slider component for consistent styling, accessibility, and reusability.
- * Provides a clear label and current value display.
+ * Provides a clear label and current value display. Reverts to browser default styling.
  * @param {object} props - Component props.
  * @param {string} props.label - Label text for the slider.
  * @param {number} props.min - Minimum value of the slider.
@@ -180,9 +179,9 @@ const Checkbox = ({ id, label, checked, onChange }) => (
  * @param {function} props.onChange - Callback for when the slider value changes.
  */
 const RangeSlider = ({ label, min, max, value, onChange }) => (
-  <div className="mb-4">
-    <label htmlFor={label} className="block text-gray-200 text-sm font-mono mb-2">
-      {label}: <span className="font-semibold text-green-400">{value}</span>
+  <div style={{ marginBottom: '15px' }}>
+    <label htmlFor={label} style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
+      {label}: <span style={{ fontWeight: 'bold' }}>{value}</span>
     </label>
     <input
       type="range"
@@ -191,8 +190,7 @@ const RangeSlider = ({ label, min, max, value, onChange }) => (
       max={max}
       value={value}
       onChange={onChange}
-      // Adjusted colors for retro feel
-      className="w-full h-2 bg-gray-600 rounded-none appearance-none cursor-pointer range-sm accent-green-400"
+      style={{ width: '100%' }} // Basic width for functionality
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={value}
@@ -283,10 +281,8 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
   }, [passwordLength, includeSymbols, includeNumbers, includeUppercase, includeLowercase, onGenerate]);
 
   return (
-    <div className="p-6 bg-gray-800 border-2 border-green-500">
-      <h2 className="text-2xl font-bold text-green-400 mb-6 font-mono">
-        RANDOM GENERATION
-      </h2>
+    <div style={{ padding: '15px', border: '1px solid black', marginBottom: '20px' }}>
+      <h2>Random Generation</h2>
 
       <RangeSlider
         label="Password Length"
@@ -296,7 +292,7 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
         onChange={(e) => setPasswordLength(parseInt(e.target.value, 10))}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '5px' }}>
         <Checkbox
           id="includeLowercase"
           label="Include Lowercase Letters (a-z)"
@@ -325,9 +321,9 @@ const RandomPasswordGenerator = ({ onGenerate }) => {
 
       <button
         onClick={generatePassword}
-        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out"
+        style={{ marginTop: '20px', padding: '8px 15px', fontSize: '14px' }}
       >
-        GENERATE RANDOM PASSWORD
+        Generate Random Password
       </button>
     </div>
   );
@@ -523,10 +519,8 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
   };
 
   return (
-    <div className="p-6 bg-gray-800 border-2 border-green-500">
-      <h2 className="text-2xl font-bold text-green-400 mb-6 font-mono">
-        WORD CHAIN GENERATION
-      </h2>
+    <div style={{ padding: '15px', border: '1px solid black', marginBottom: '20px' }}>
+      <h2>Word Chain Generation</h2>
 
       <RangeSlider
         label="Number of Words"
@@ -536,7 +530,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
         onChange={(e) => setWordCount(parseInt(e.target.value, 10))}
       />
 
-      <div className="mb-4">
+      <div style={{ marginBottom: '15px' }}>
         <Checkbox
           id="useDefaultList"
           label="Use Default Word List"
@@ -545,16 +539,15 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
         />
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="separatorType" className="block text-gray-200 text-sm font-mono mb-2">
+      <div style={{ marginBottom: '15px' }}>
+        <label htmlFor="separatorType" style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
           Separator Type:
         </label>
         <select
           id="separatorType"
           value={separatorType}
           onChange={(e) => setSeparatorType(e.target.value)}
-          // Removed rounded-md, adjusted colors
-          className="w-full p-2 bg-gray-900 border-2 border-green-500 text-green-400 focus:ring-green-400 focus:border-green-400 font-mono"
+          style={{ width: '100%', padding: '5px', border: '1px solid black', fontSize: '14px' }}
         >
           {SEPARATOR_OPTIONS.map(option => (
             <option key={option.value} value={option.value}>{option.label}</option>
@@ -562,7 +555,7 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '5px' }}>
         <Checkbox
           id="randomCapitalization"
           label="Random Capitalization"
@@ -584,48 +577,45 @@ const WordChainPasswordGenerator = ({ onGenerate }) => {
       </div>
 
 
-      <div className="mb-4 p-4 bg-gray-900 border-2 border-green-500 mt-4">
-        <p className="text-green-400 text-sm font-mono mb-2">
-          ADD CUSTOM WORDS (ONE WORD PER LINE, OR SPACE-SEPARATED, OR URL):
+      <div style={{ marginBottom: '15px', padding: '10px', border: '1px solid black', marginTop: '20px' }}>
+        <p style={{ fontSize: '14px', marginBottom: '10px' }}>
+          Add Custom Words (one word per line, or space-separated, or URL):
         </p>
-        <label htmlFor="customWordList" className="sr-only">Custom Word List Input</label>
+        <label htmlFor="customWordList" style={{ display: 'none' }}>Custom Word List Input</label>
         <textarea
           id="customWordList"
-          // Removed rounded-md, adjusted colors
-          className="w-full p-2 bg-gray-900 border-2 border-green-500 text-green-400 font-mono focus:ring-green-400 focus:border-green-400"
+          style={{ width: '100%', padding: '5px', border: '1px solid black', fontSize: '14px', boxSizing: 'border-box' }}
           rows="5"
-          placeholder="ENTER WORDS HERE, OR PASTE A URL (E.G., HTTPS://EXAMPLE.COM/WORDS.TXT)"
+          placeholder="Enter words here, or paste a URL (e.g., https://example.com/words.txt)"
           value={customWordListInput}
           onChange={(e) => setCustomWordListInput(e.target.value)}
         ></textarea>
-        <div className="mt-4 text-sm text-gray-400 font-mono">
+        <div style={{ marginTop: '10px', fontSize: '12px' }}>
           <button
             onClick={processCustomWordList}
-            // Retro button style, removed hover:scale-105
-            className="bg-gray-600 hover:bg-gray-500 text-gray-200 py-2 px-4 border-2 border-gray-500 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out"
+            style={{ padding: '5px 10px', fontSize: '12px', marginRight: '10px' }}
             disabled={loadingWords}
           >
-            <Link className="inline-block mr-2" size={18} />
             {loadingWords ? 'LOADING...' : 'PROCESS INPUT'}
           </button>
         </div>
         {wordListError && (
-          <p className="text-red-500 text-sm mt-2 font-mono">{wordListError}</p>
+          <p style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>{wordListError}</p>
         )}
         {customWords.length > 0 && !loadingWords && !wordListError && (
-          <p className="text-green-400 text-sm mt-2 font-mono">LOADED {customWords.length} CUSTOM WORDS.</p>
+          <p style={{ color: 'green', fontSize: '12px', marginTop: '5px' }}>LOADED {customWords.length} CUSTOM WORDS.</p>
         )}
         {useDefaultList && customWords.length > 0 && (
-          <p className="text-blue-400 text-sm mt-2 font-mono">DEFAULT WORDS AND CUSTOM WORDS WILL BE COMBINED.</p>
+          <p style={{ color: 'blue', fontSize: '12px', marginTop: '5px' }}>DEFAULT WORDS AND CUSTOM WORDS WILL BE COMBINED.</p>
         )}
         {!useDefaultList && customWords.length === 0 && (
-          <p className="text-orange-400 text-sm mt-2 font-mono">NO WORDS SELECTED. PLEASE ENABLE DEFAULT LIST OR PROVIDE CUSTOM WORDS.</p>
+          <p style={{ color: 'orange', fontSize: '12px', marginTop: '5px' }}>NO WORDS SELECTED. PLEASE ENABLE DEFAULT LIST OR PROVIDE CUSTOM WORDS.</p>
         )}
       </div>
 
       <button
         onClick={generateWordChain}
-        className="mt-8 w-full bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-3 px-6 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out"
+        style={{ marginTop: '20px', padding: '8px 15px', fontSize: '14px' }}
       >
         GENERATE WORD CHAIN PASSWORD
       </button>
@@ -682,82 +672,59 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center py-4 px-2 font-mono text-gray-200">
-      <style>
-        {`
-        /* Removed custom hard shadows */
-        /* Ensure inputs and selects have sharp corners */
-        input[type="text"], textarea, select {
-          border-radius: 0 !important;
-        }
-        /* Style for disabled buttons */
-        button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          box-shadow: none; /* Remove shadow when disabled */
-          transform: none; /* Remove transform when disabled */
-        }
-        `}
-      </style>
-      <div className="bg-gray-800 border-2 border-green-500 overflow-hidden w-full max-w-3xl"> {/* Removed shadow-hard-green */}
-        <header className="bg-gray-900 border-b-2 border-green-500 text-green-400 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <h1 className="text-xl sm:text-2xl font-bold text-center sm:text-left">
-            PASSWORD GENERATOR
-          </h1>
-          <div className="flex flex-wrap justify-center sm:justify-end gap-2">
-            <button
-              onClick={() => setCurrentMode('random')}
-              className={`py-2 px-4 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 ${
-                currentMode === 'random' ? 'bg-green-600 text-gray-900' : 'bg-gray-700 hover:bg-gray-600 text-green-400'
-              } flex items-center`}
-            >
-              <Shuffle className="mr-2" size={16} /> RANDOM
-            </button>
-            <button
-              onClick={() => setCurrentMode('word-chain')}
-              className={`py-2 px-4 border-2 border-green-700 text-sm font-bold transition duration-75 ease-in-out active:translate-x-0.5 active:translate-y-0.5 ${
-                currentMode === 'word-chain' ? 'bg-green-600 text-gray-900' : 'bg-gray-700 hover:bg-gray-600 text-green-400'
-              } flex items-center`}
-            >
-              <ListChecks className="mr-2" size={16} /> WORD CHAIN
-            </button>
-          </div>
-        </header>
+    <div style={{ fontFamily: 'serif', margin: '20px', color: 'black', backgroundColor: 'white' }}>
+      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>My HTML Password Generator</h1>
 
-        <main className="p-4 space-y-4">
-          {currentMode === 'random' ? (
-            <RandomPasswordGenerator onGenerate={handleGeneratePassword} />
-          ) : (
-            <WordChainPasswordGenerator onGenerate={handleGeneratePassword} />
-          )}
+      <div style={{ marginBottom: '20px' }}>
+        <button
+          onClick={() => setCurrentMode('random')}
+          style={{ padding: '8px 15px', fontSize: '14px', marginRight: '10px', fontWeight: currentMode === 'random' ? 'bold' : 'normal' }}
+        >
+          RANDOM
+        </button>
+        <button
+          onClick={() => setCurrentMode('word-chain')}
+          style={{ padding: '8px 15px', fontSize: '14px', fontWeight: currentMode === 'word-chain' ? 'bold' : 'normal' }}
+        >
+          WORD CHAIN
+        </button>
+      </div>
 
-          <div className="p-4 bg-gray-900 border-2 border-green-500">
-            <h3 className="text-lg font-bold text-green-400 mb-3 font-mono">
-              GENERATED PASSWORD
-            </h3>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
-              <input
-                type="text"
-                readOnly
-                value={generatedPassword}
-                className={`flex-grow p-2 bg-gray-900 border-2 font-mono text-base break-all focus:outline-none focus:ring-2 ${generatedPassword.startsWith('Error:') ? 'border-red-500 text-red-400' : 'border-green-500 text-green-400 focus:ring-green-400'}`}
-                placeholder="YOUR PASSWORD WILL APPEAR HERE..."
-              />
-              <button
-                onClick={handleCopy}
-                className="bg-green-600 hover:bg-green-500 text-gray-900 font-bold py-2 px-4 border-2 border-green-700 active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 ease-in-out flex items-center justify-center sm:w-auto w-full"
-                disabled={!generatedPassword || generatedPassword.startsWith('Error:')}
-              >
-                <Copy className="mr-2" size={16} /> {copyStatus.toUpperCase() || 'COPY'}
-              </button>
-            </div>
-            {copyStatus && (
-              <p className={`mt-2 text-sm ${copyStatus === 'Copied!' ? 'text-green-400' : 'text-red-400'} font-mono font-medium text-center sm:text-left`}>
-                {copyStatus.toUpperCase()}
-              </p>
-            )}
-          </div>
-        </main>
+      <div style={{ marginBottom: '20px' }}>
+        {currentMode === 'random' ? (
+          <RandomPasswordGenerator onGenerate={handleGeneratePassword} />
+        ) : (
+          <WordChainPasswordGenerator onGenerate={handleGeneratePassword} />
+        )}
+      </div>
+
+      <div style={{ padding: '15px', border: '1px solid black', marginBottom: '20px' }}>
+        <h3 style={{ fontSize: '16px', marginBottom: '10px' }}>GENERATED PASSWORD</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <input
+            type="text"
+            readOnly
+            value={generatedPassword}
+            style={{ flexGrow: 1, padding: '5px', border: '1px solid black', fontSize: '14px', color: generatedPassword.startsWith('Error:') ? 'red' : 'black' }}
+            placeholder="YOUR PASSWORD WILL APPEAR HERE..."
+          />
+          <button
+            onClick={handleCopy}
+            style={{ padding: '8px 15px', fontSize: '14px' }}
+            disabled={!generatedPassword || generatedPassword.startsWith('Error:')}
+          >
+            {copyStatus.toUpperCase() || 'COPY'}
+          </button>
+        </div>
+        {copyStatus && (
+          <p style={{ fontSize: '12px', marginTop: '5px', color: copyStatus === 'Copied!' ? 'green' : 'red' }}>
+            {copyStatus.toUpperCase()}
+          </p>
+        )}
+      </div>
+
+      <div style={{ fontSize: '12px', marginTop: '30px' }}>
+        © 1991-2004 Old-School Web Designs
       </div>
     </div>
   );
